@@ -22,7 +22,6 @@
         <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     </head>
     <body class="antialiased">
-        Hello World
         <div id="app">
             <example-component></example-component>
         </div>
