@@ -1,73 +1,11 @@
 version: 2.1
-
 jobs:
   build:
     docker:
-      - image: circleci/php:7.4-node-browsers
-      - image: circleci/mariadb:10.3.32-ram
-    environment:
-      APP_ENV: testing
-      DB_CONNECTION: mysql
-      DB_HOST: 127.0.0.1
-      DB_PORT: 3306
-      DB_DATABASE: circle_test
-      DB_USERNAME: root
+      - image: cimg/node:17.2.0 # ジョブのコマンドが実行されるプライマリ コンテナ
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # コンテキスト/プロジェクト UI 環境変数を参照します
     steps:
-      - checkout
-      - run: sudo composer self-update --1
-      - restore_cache:
-          key: composer-v1-{{ checksum "composer.lock" }}
-      - run: composer install -n --prefer-dist
-      - save_cache:
-          key: composer-v1-{{ checksum "composer.lock" }}
-          paths:
-            - vendor
-      - restore_cache:
-          key: npm-v1-{{ checksum "package-lock.json" }}
-      - run:
-          name: npm ci
-          command: |
-            if [ ! -d node_modules ]; then
-              npm ci
-            fi
-      - save_cache:
-          key: npm-v1-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
-      - run: npm run dev
-      - run:
-          name: get ready for mariadb
-          command: |
-            sudo apt-get update
-            sudo docker-php-ext-install pdo_mysql
-            dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
-      - run:
-          name: php test
-          command: vendor/bin/phpunit
-  deploy:
-    docker:
-      - image: circleci/php:7.4-node-browsers
-    steps:
-      - add_ssh_keys
-      - run:
-          name: deploy
-          command: |
-            ssh -o StrictHostKeyChecking=no -t ${USER_NAME}@${HOST_NAME} "cd /var/www/html/vuesplash.haniwa.site && \
-              git pull origin main && \
-              composer install -n --no-dev --prefer-dist && \
-              npm ci && \
-              npm run prod && \
-              php artisan migrate --force && \
-              php artisan config:cache"
-workflows:
-  version: 2
-  build_deploy:
-    jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - main
+      - checkout # プロジェクト ディレクトリ内のコードをチェックアウトします
+      - run: echo "hello world" # `echo` コマンドを実行します
