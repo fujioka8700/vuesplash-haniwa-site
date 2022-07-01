@@ -25,9 +25,4 @@ mix.js('resources/js/app.js', 'public/js')
         notify: false,
         open: false,
         reloadOnRestart: true,
-    })
-    .webpackConfig({
-        stats: {
-            children: true,
-        }
     });
