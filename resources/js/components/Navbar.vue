@@ -5,14 +5,14 @@
         Vuesplash
       </RouterLink>
       <div class="navbar__menu">
-        <div class="navbar__item">
+        <div class="navbar__item" v-if="isLogin">
           <button class="button">
             <i class="icon ion-md-add"></i>
-            Submit a phpto
+            Submit a photo
           </button>
         </div>
-        <span class="navbar__item">
-          user name
+        <span class="navbar__item" v-if="isLogin">
+          {{ username }}
         </span>
       </div>
       <div class="navbar__item">
@@ -23,3 +23,16 @@
     </nav>
   </header>
 </template>
+
+<script>
+export default {
+  computed: {
+    isLogin() {
+      return this.$store.getters['auth/check'];
+    },
+    username() {
+      return this.$store.getters['auth/username'];
+    }
+  }
+}
+</script>

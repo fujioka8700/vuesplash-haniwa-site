@@ -47,8 +47,8 @@ export default {
     return {
       tab: 1,
       loginForm: {
-        email: '',
-        password: ''
+        email: 'a@a.com',
+        password: 'aaaaaaaa'
       },
       registerForm: {
         name: '',
