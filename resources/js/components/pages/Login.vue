@@ -45,7 +45,7 @@
 export default {
   data() {
     return {
-      tab: 2,
+      tab: 1,
       loginForm: {
         email: '',
         password: ''
@@ -59,8 +59,10 @@ export default {
     }
   },
   methods: {
-    login() {
-      console.log(this.loginForm);
+    async login() {
+      await this.$store.dispatch('auth/login', this.loginForm);
+
+      this.$router.push('/');
     },
     async register() {
       await this.$store.dispatch('auth/register', this.registerForm);
