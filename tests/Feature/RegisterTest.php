@@ -23,7 +23,7 @@ class RegisterTest extends TestCase
       'password_confirmation' => 'test1234'
     ];
 
-    $response = $this->json('POST', route('register'), $data);
+    $response = $this->postJson(route('register'), $data);
 
     $user = User::first();
     $this->assertEquals($data['name'], $user->name);

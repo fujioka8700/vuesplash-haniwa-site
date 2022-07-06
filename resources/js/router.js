@@ -4,6 +4,8 @@ import VueRouter from 'vue-router';
 import PictureList from './components/pages/PictureList';
 import Login from './components/pages/Login';
 
+import store from './store';
+
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -15,7 +17,14 @@ const router = new VueRouter({
     },
     {
       path: '/login',
-      component: Login
+      component: Login,
+      beforeEnter(to, from, next) {
+        if (store.getters['auth/check']) {
+          next('/');
+        } else {
+          next();
+        }
+      }
     }
   ]
 });
