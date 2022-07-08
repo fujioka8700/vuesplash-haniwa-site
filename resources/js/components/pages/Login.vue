@@ -61,6 +61,9 @@ export default {
   computed: {
     apiStatus() {
       return this.$store.state.auth.apiStatus;
+    },
+    loginErrors() {
+      return this.$store.state.auth.loginErrorMessages;
     }
   },
   methods: {
