@@ -23,6 +23,14 @@ window.axios.interceptors.request.use(config => {
 });
 
 /**
+ * レスポンスを受けた後の処理を上書きする。
+ */
+window.axios.interceptors.response.use(
+  response => response,
+  error => error.response || error
+);
+
+/**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.

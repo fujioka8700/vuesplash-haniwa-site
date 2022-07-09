@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 
 import PictureList from './components/pages/PictureList';
 import Login from './components/pages/Login';
+import SystemError from './components/pages/errors/System';
 
 import store from './store';
 
@@ -25,6 +26,10 @@ const router = new VueRouter({
           next();
         }
       }
+    },
+    {
+      path: '/500',
+      component: SystemError
     }
   ]
 });
