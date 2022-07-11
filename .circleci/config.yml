@@ -42,7 +42,7 @@ jobs:
             dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
       - run:
           name: php test
-          command: vendor/bin/phpunit
+          command: vendor/bin/phpunit --testdox
   deploy:
     docker:
       - image: circleci/php:7.4-node-browsers
