@@ -42,7 +42,10 @@ jobs:
             dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
       - run:
           name: extension module for php image processing
-          command: sudo docker-php-ext-install gd
+          command: |
+            sudo apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libwebp-dev
+            sudo docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
+            sudo docker-php-ext-install -j$(nproc) gd
       - run:
           name: php test
           command: vendor/bin/phpunit --testdox
