@@ -42,7 +42,7 @@ jobs:
             dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
       - run:
           name: extension module for php image processing
-          command: docker-php-ext-install gd
+          command: sudo docker-php-ext-install gd
       - run:
           name: php test
           command: vendor/bin/phpunit --testdox
