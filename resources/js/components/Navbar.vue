@@ -1,12 +1,13 @@
 <template>
   <header>
     <nav class="navbar">
+      <PictureForm v-model="showForm"/>
       <RouterLink class="navbar__brand" to="/">
         Vuesplash
       </RouterLink>
       <div class="navbar__menu">
         <div class="navbar__item" v-if="isLogin">
-          <button class="button">
+          <button class="button" @click="showForm = !showForm">
             <i class="icon ion-md-add"></i>
             Submit a photo
           </button>
@@ -25,7 +26,17 @@
 </template>
 
 <script>
+import PictureForm from './PictureForm';
+
 export default {
+  components: {
+    PictureForm
+  },
+  data() {
+    return {
+      showForm: false
+    }
+  },
   computed: {
     isLogin() {
       return this.$store.getters['auth/check'];
