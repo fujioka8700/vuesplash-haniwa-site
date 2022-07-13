@@ -2,6 +2,9 @@
   <div v-show="value" class="photo-form">
     <h2 class="title">Submit a photo</h2>
     <form class="form" @submit.prevent="submit">
+      <div>
+        {{ errors }}
+      </div>
       <input class="form__item" type="file" @change="onFilechange">
       <output v-if="preview">
         <img :src="preview" alt="">
@@ -14,6 +17,7 @@
 </template>
 
 <script>
+import { CREATED, UNPROCESSABLE_ENTITY }from '../util';
 import axios from "axios";
 
 export default {
@@ -26,7 +30,8 @@ export default {
   data() {
     return {
       preview: null,
-      picture: null
+      picture: null,
+      errors: null
     }
   },
   methods: {
@@ -75,14 +80,26 @@ export default {
       formData.append('picture', this.picture);
       const response = await axios.post('/api/pictures', formData);
 
+      // レスポンスが 422 ならページ遷移せず、エラー内容を表示する
+      if (response.status === UNPROCESSABLE_ENTITY) {
+        this.errors = response.data.errors;
+        return false;
+      }
+
       this.reset();
 
       // 親コンポーネントの showForm を false にする
       this.$emit('input', false);
 
+      // error/code を変更する
+      if (response.status !== CREATED) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
       // 投稿完了後に写真詳細ページに移動する
       this.$router.push({
-        name: 'PictureDetail',
+        name: 'pictureDetail',
         params: {
           id: response.data.id
         }
