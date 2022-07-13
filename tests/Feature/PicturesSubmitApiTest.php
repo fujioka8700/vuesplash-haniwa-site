@@ -68,4 +68,22 @@ class PicturesSubmitApiTest extends TestCase
     // ストレージにファイルが保存されていないこと
     $this->assertEquals(0, count(Storage::cloud()->files()));
   }
+
+  /**
+   * @test
+   */
+  public function should_ファイル保存時エラーの場合はDBへの挿入はしない()
+  {
+    // ストレージをモックして保存時にエラーを起こさせる
+    Storage::shouldReceive('cloud')->once()->andReturnNull();
+
+    $response = $this->actingAs($this->user)->postJson(route('picture.create'), [
+      'picture' => UploadedFile::fake()->image('picture.jpg')
+    ]);
+
+    $response->assertStatus(500);
+
+    // データベースに何も挿入されていないこと
+    $this->assertEmpty(Picture::all());
+  }
 }
