@@ -79,6 +79,14 @@ export default {
 
       // 親コンポーネントの showForm を false にする
       this.$emit('input', false);
+
+      // 投稿完了後に写真詳細ページに移動する
+      this.$router.push({
+        name: 'PictureDetail',
+        params: {
+          id: response.data.id
+        }
+      })
     }
   }
 }

@@ -10,6 +10,9 @@ class Picture extends Model
 {
     use HasFactory;
 
+    /** 連番ではないので、incrementingをfalseにする */
+    public $incrementing = false;
+
     /** プライマリーキーの型 */
     protected $keyType = 'string';
 
