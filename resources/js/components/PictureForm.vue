@@ -1,7 +1,7 @@
 <template>
   <div v-show="value" class="photo-form">
     <h2 class="title">Submit a photo</h2>
-    <form class="form">
+    <form class="form" @submit.prevent="submit">
       <input class="form__item" type="file" @change="onFilechange">
       <output v-if="preview">
         <img :src="preview" alt="">
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   props: {
     value: {
@@ -23,7 +25,8 @@ export default {
   },
   data() {
     return {
-      preview: null
+      preview: null,
+      picture: null
     }
   },
   methods: {
@@ -31,6 +34,7 @@ export default {
     onFilechange(event) {
       // 何も選択されていなかったら処理中断
       if(event.target.files === 0) {
+        this.reset();
         return false;
       }
 
@@ -50,12 +54,31 @@ export default {
 
       // ファイルを読み込む
       reader.readAsDataURL(event.target.files[0]);
+
+      // 選択中のファイルを格納する
+      this.picture = event.target.files[0];
     },
-    // 入力の欄の値とプレビュー表示をクリアにするメソッド
+
+    // 入力の欄の値、プレビュー表示、格納したファイルをクリアにするメソッド
     reset() {
       this.preview = '';
+      this.picture = null;
+
       // this.$elはコンポーネントそのもののDOM要素を指す
       this.$el.querySelector('input[type="file"]').value = null;
+    },
+
+    // ファイルを送信する
+    async submit() {
+      // Ajax でファイルを送るため、FormDta APIを使用
+      const formData = new FormData();
+      formData.append('picture', this.picture);
+      const response = await axios.post('/api/pictures', formData);
+
+      this.reset();
+
+      // 親コンポーネントの showForm を false にする
+      this.$emit('input', false);
     }
   }
 }

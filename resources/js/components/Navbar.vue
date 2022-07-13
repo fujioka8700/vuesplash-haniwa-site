@@ -1,7 +1,7 @@
 <template>
   <header>
     <nav class="navbar">
-      <PictureForm v-model="showForm"/>
+      <PictureForm v-model="showForm" />
       <RouterLink class="navbar__brand" to="/">
         Vuesplash
       </RouterLink>
