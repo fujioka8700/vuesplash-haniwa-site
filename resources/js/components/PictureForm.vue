@@ -2,8 +2,10 @@
   <div v-show="value" class="photo-form">
     <h2 class="title">Submit a photo</h2>
     <form class="form" @submit.prevent="submit">
-      <div>
-        {{ errors }}
+      <div v-if="errors" class="errors">
+        <ul v-if="errors.picture">
+          <li v-for="msg in errors.picture" :key="msg">{{ msg }}</li>
+        </ul>
       </div>
       <input class="form__item" type="file" @change="onFilechange">
       <output v-if="preview">
@@ -62,6 +64,9 @@ export default {
 
       // 選択中のファイルを格納する
       this.picture = event.target.files[0];
+
+      // 前回、画像以外を選択していた場合のエラーを削除
+      this.errors = null;
     },
 
     // 入力の欄の値、プレビュー表示、格納したファイルをクリアにするメソッド
@@ -80,7 +85,7 @@ export default {
       formData.append('picture', this.picture);
       const response = await axios.post('/api/pictures', formData);
 
-      // レスポンスが 422 ならページ遷移せず、エラー内容を表示する
+      // 画像以外がアップロードされたら、エラー内容を表示する
       if (response.status === UNPROCESSABLE_ENTITY) {
         this.errors = response.data.errors;
         return false;

@@ -44,7 +44,8 @@ return [
     'email'                => ':attributeには、有効なメールアドレスを指定してください。',
     'ends_with'            => ':attributeには、:valuesのどれかで終わる値を指定してください。',
     'exists'               => '選択された:attributeは正しくありません。',
-    'file'                 => ':attributeにはファイルを指定してください。',
+    // 'file'                 => ':attributeにはファイルを指定してください。',
+    'file'                 => '画像ファイルを指定してください。',
     'filled'               => ':attributeに値を指定してください。',
     'gt'                   => [
         'numeric' => ':attributeには、:valueより大きな値を指定してください。',
@@ -84,7 +85,8 @@ return [
         'string'  => ':attributeは、:max文字以下で指定してください。',
         'array'   => ':attributeは:max個以下指定してください。',
     ],
-    'mimes'                => ':attributeには:valuesタイプのファイルを指定してください。',
+    // 'mimes'                => ':attributeには:valuesタイプのファイルを指定してください。',
+    'mimes'                => ':valuesタイプのファイルを指定してください。',
     'mimetypes'            => ':attributeには:valuesタイプのファイルを指定してください。',
     'min'                  => [
         'numeric' => ':attributeには、:min以上の数字を指定してください。',
