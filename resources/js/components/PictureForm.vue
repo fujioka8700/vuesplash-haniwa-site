@@ -1,7 +1,10 @@
 <template>
   <div v-show="value" class="photo-form">
     <h2 class="title">Submit a photo</h2>
-    <form class="form" @submit.prevent="submit">
+    <div v-show="loading" class="panel">
+      <Loader>Sending your picture...</Loader>
+    </div>
+    <form v-show="!loading" class="form" @submit.prevent="submit">
       <div v-if="errors" class="errors">
         <ul v-if="errors.picture">
           <li v-for="msg in errors.picture" :key="msg">{{ msg }}</li>
@@ -19,10 +22,14 @@
 </template>
 
 <script>
+import Loader from './Loader'
 import { CREATED, UNPROCESSABLE_ENTITY }from '../util';
 import axios from "axios";
 
 export default {
+  components: {
+    Loader
+  },
   props: {
     value: {
       type: Boolean,
@@ -31,6 +38,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       preview: null,
       picture: null,
       errors: null
@@ -80,10 +88,16 @@ export default {
 
     // ファイルを送信する
     async submit() {
+      // 画像送信中はSending画面を表示する
+      this.loading = true;
+
       // Ajax でファイルを送るため、FormDta APIを使用
       const formData = new FormData();
       formData.append('picture', this.picture);
       const response = await axios.post('/api/pictures', formData);
+
+      // 画像送信後は、Sending画面を消す
+      this.loading = false;
 
       // 画像以外がアップロードされたら、エラー内容を表示する
       if (response.status === UNPROCESSABLE_ENTITY) {
