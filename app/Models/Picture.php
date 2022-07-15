@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 class Picture extends Model
 {
@@ -15,6 +16,16 @@ class Picture extends Model
 
     /** プライマリーキーの型 */
     protected $keyType = 'string';
+
+    /** JSONに追加する属性 */
+    protected $appends = [
+      'url',
+    ];
+
+    /** JSONに含める属性 */
+    protected $visible = [
+      'id', 'owner', 'url'
+    ];
 
     /** IDの桁数 */
     const ID_LENGTH = 12;
@@ -55,5 +66,23 @@ class Picture extends Model
       }
 
       return $id;
+    }
+
+    /**
+     * リレーションシップ - usersテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function owner()
+    {
+      return $this->belongsTo('App\Models\User', 'user_id', 'id', 'users');
+    }
+
+    /**
+     * アクセサ - url
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+      return Storage::cloud()->url($this->attributes['filename']);
     }
 }

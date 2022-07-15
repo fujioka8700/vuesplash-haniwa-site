@@ -1,7 +1,15 @@
 <template>
   <div v-show="value" class="photo-form">
     <h2 class="title">Submit a photo</h2>
-    <form class="form" @submit.prevent="submit">
+    <div v-show="loading" class="panel">
+      <Loader>Sending your picture...</Loader>
+    </div>
+    <form v-show="!loading" class="form" @submit.prevent="submit">
+      <div v-if="errors" class="errors">
+        <ul v-if="errors.picture">
+          <li v-for="msg in errors.picture" :key="msg">{{ msg }}</li>
+        </ul>
+      </div>
       <input class="form__item" type="file" @change="onFilechange">
       <output v-if="preview">
         <img :src="preview" alt="">
@@ -14,9 +22,14 @@
 </template>
 
 <script>
+import Loader from './Loader'
+import { CREATED, UNPROCESSABLE_ENTITY }from '../util';
 import axios from "axios";
 
 export default {
+  components: {
+    Loader
+  },
   props: {
     value: {
       type: Boolean,
@@ -25,8 +38,10 @@ export default {
   },
   data() {
     return {
+      loading: false,
       preview: null,
-      picture: null
+      picture: null,
+      errors: null
     }
   },
   methods: {
@@ -57,6 +72,9 @@ export default {
 
       // 選択中のファイルを格納する
       this.picture = event.target.files[0];
+
+      // 前回、画像以外を選択していた場合のエラーを削除
+      this.errors = null;
     },
 
     // 入力の欄の値、プレビュー表示、格納したファイルをクリアにするメソッド
@@ -70,19 +88,43 @@ export default {
 
     // ファイルを送信する
     async submit() {
+      // 画像送信中はSending画面を表示する
+      this.loading = true;
+
       // Ajax でファイルを送るため、FormDta APIを使用
       const formData = new FormData();
       formData.append('picture', this.picture);
       const response = await axios.post('/api/pictures', formData);
+
+      // 画像送信後は、Sending画面を消す
+      this.loading = false;
+
+      // 画像以外がアップロードされたら、エラー内容を表示する
+      if (response.status === UNPROCESSABLE_ENTITY) {
+        this.errors = response.data.errors;
+        return false;
+      }
 
       this.reset();
 
       // 親コンポーネントの showForm を false にする
       this.$emit('input', false);
 
+      // error/code を変更する
+      if (response.status !== CREATED) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
+      // メッセージ登録と、メッセージを表示する時間を設定する
+      this.$store.commit('message/setContent', {
+        content: '写真が投稿されました！',
+        timeout: 6000
+      });
+
       // 投稿完了後に写真詳細ページに移動する
       this.$router.push({
-        name: 'PictureDetail',
+        name: 'pictureDetail',
         params: {
           id: response.data.id
         }

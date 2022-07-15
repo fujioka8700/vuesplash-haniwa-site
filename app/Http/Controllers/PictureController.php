@@ -16,7 +16,18 @@ class PictureController extends Controller
       /**
        * 認証が必要
        */
-      $this->middleware('auth');
+      $this->middleware('auth')->except('index');
+    }
+
+    /**
+     * 写真一覧
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+      $pictures = Picture::with(['owner'])->orderby(Picture::CREATED_AT, 'desc')->paginate();
+
+      return $pictures;
     }
 
     /**

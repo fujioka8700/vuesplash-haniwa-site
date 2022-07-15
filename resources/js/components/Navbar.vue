@@ -1,7 +1,9 @@
 <template>
   <header>
     <nav class="navbar">
-      <PictureForm v-model="showForm" />
+      <div v-if="isLogin">
+        <PictureForm v-model="showForm" />
+      </div>
       <RouterLink class="navbar__brand" to="/">
         Vuesplash
       </RouterLink>

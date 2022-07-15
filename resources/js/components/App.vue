@@ -3,6 +3,7 @@
     <Navbar />
     <main>
       <div class="container">
+        <Message />
         <RouterView />
       </div>
     </main>
@@ -12,11 +13,13 @@
 
 <script>
 import { INTERNAL_SERVER_ERROR } from '../util';
+import Message from './Message';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
 export default {
   components: {
+    Message,
     Navbar,
     Footer
   },

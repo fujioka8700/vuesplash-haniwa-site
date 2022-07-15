@@ -19,7 +19,7 @@ const router = new VueRouter({
     },
     {
       path: '/pictures/:id',
-      name: 'PictureDetail',
+      name: 'pictureDetail',
       component: PictureDetail,
       props: true
     },
