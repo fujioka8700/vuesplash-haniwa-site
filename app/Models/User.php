@@ -24,13 +24,10 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * JSONに含める属性
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
+    protected $visible = [
+      'name',
     ];
 
     /**

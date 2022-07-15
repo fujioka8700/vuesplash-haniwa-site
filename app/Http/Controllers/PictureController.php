@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Picture;
+use App\Http\Requests\StorePicture;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,18 @@ class PictureController extends Controller
       /**
        * 認証が必要
        */
-      $this->middleware('auth');
+      $this->middleware('auth')->except('index');
+    }
+
+    /**
+     * 写真一覧
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+      $pictures = Picture::with(['owner'])->orderby(Picture::CREATED_AT, 'desc')->paginate();
+
+      return $pictures;
     }
 
     /**
@@ -23,7 +35,7 @@ class PictureController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(StorePicture $request)
     {
       // 投稿写真の拡張子を取得する
       $extension = $request->picture->extension();

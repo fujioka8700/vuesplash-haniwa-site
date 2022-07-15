@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import PictureList from './components/pages/PictureList';
+import PictureDetail from './components/pages/PictureDetail';
 import Login from './components/pages/Login';
 import SystemError from './components/pages/errors/System';
 
@@ -15,6 +16,12 @@ const router = new VueRouter({
     {
       path: '/',
       component: PictureList
+    },
+    {
+      path: '/pictures/:id',
+      name: 'pictureDetail',
+      component: PictureDetail,
+      props: true
     },
     {
       path: '/login',
