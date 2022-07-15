@@ -16,7 +16,7 @@ class PictureController extends Controller
       /**
        * 認証が必要
        */
-      $this->middleware('auth')->except('index');
+      $this->middleware('auth')->except(['index', 'download']);
     }
 
     /**
@@ -68,5 +68,21 @@ class PictureController extends Controller
       // リソースの新規作成なので
       // レスポンスは201(CREATED)を返却する
       return response($picture, 201);
+    }
+
+    public function download(Picture $picture)
+    {
+      // 写真の存在チェック
+      if (! Storage::cloud()->exists($picture->filename)) {
+        return abort(404);
+      }
+
+      $disposition = 'attachment; filename="' . $picture->filename . '"';
+      $headers = [
+          'Content-Type' => 'application/octet-stream',
+          'Content-Disposition' => $disposition,
+      ];
+
+      return response(Storage::cloud()->get($picture->filename), 200, $headers);
     }
 }
