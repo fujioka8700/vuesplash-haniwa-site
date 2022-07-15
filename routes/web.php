@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PictureController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/pictures/{picture}/download', [PictureController::class, 'download']);
 Route::get('/{any?}', fn() => view('index'))->where('any', '.+');
 
 
