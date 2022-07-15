@@ -27,3 +27,4 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/user', fn() => Auth::user())->name('user');
 Route::post('/pictures', [PictureController::class, 'create'])->name('picture.create');
+Route::get('/pictures', [PictureController::class, 'index'])->name('picture.index');
