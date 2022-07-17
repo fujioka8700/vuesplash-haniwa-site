@@ -17,6 +17,9 @@ class Picture extends Model
     /** プライマリーキーの型 */
     protected $keyType = 'string';
 
+    /** 1ページあたりの項目数を制御する */
+    protected $perPage = 15;
+
     /** JSONに追加する属性 */
     protected $appends = [
       'url',
@@ -24,8 +27,35 @@ class Picture extends Model
 
     /** JSONに含める属性 */
     protected $visible = [
-      'id', 'owner', 'url'
+      'id', 'owner', 'url', 'comments'
     ];
+
+    /**
+     * リレーションシップ - usersテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function owner()
+    {
+      return $this->belongsTo('App\Models\User', 'user_id', 'id', 'users');
+    }
+
+    /**
+     * リレーションシップ - commentsテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+      return $this->hasMany('App\Models\Comment')->orderBy('id', 'desc');
+    }
+
+    /**
+     * アクセサ - url
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+      return Storage::cloud()->url($this->attributes['filename']);
+    }
 
     /** IDの桁数 */
     const ID_LENGTH = 12;
@@ -66,23 +96,5 @@ class Picture extends Model
       }
 
       return $id;
-    }
-
-    /**
-     * リレーションシップ - usersテーブル
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function owner()
-    {
-      return $this->belongsTo('App\Models\User', 'user_id', 'id', 'users');
-    }
-
-    /**
-     * アクセサ - url
-     * @return string
-     */
-    public function getUrlAttribute()
-    {
-      return Storage::cloud()->url($this->attributes['filename']);
     }
 }

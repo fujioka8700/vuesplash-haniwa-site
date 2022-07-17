@@ -12,10 +12,20 @@ Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: 'history',
+  // ページ遷移時にページ先頭を表示
+  scrollBehavior() {
+    return { x: 0, y: 0 }
+  },
   routes: [
     {
       path: '/',
-      component: PictureList
+      component: PictureList,
+      props: route => {
+        const page = route.query.page;
+        return {
+          page: /^[1-9][0-9]*$/.test(page) ? page * 1 : 1
+        }
+      }
     },
     {
       path: '/pictures/:id',
