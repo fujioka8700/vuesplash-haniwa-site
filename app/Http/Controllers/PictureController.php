@@ -70,6 +70,11 @@ class PictureController extends Controller
       return response($picture, 201);
     }
 
+    /**
+     * 写真ダウンロード
+     * @param Picture $picture
+     * @return \Illuminate\Http\Response
+     */
     public function download(Picture $picture)
     {
       // 写真の存在チェック
