@@ -16,7 +16,7 @@ class CommentFactory extends Factory
     {
         return [
             'content' => substr($this->faker->text(), 0, 500),
-            'user_id' =>fn() => User::factory()->create()->id,
+            'user_id' => fn() => User::factory()->create()->id,
         ];
     }
 }

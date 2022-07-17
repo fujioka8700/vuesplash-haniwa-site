@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Picture;
+use App\Models\Comment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -19,12 +20,23 @@ class PictureDetailApiTest extends TestCase
     {
       Storage::fake('s3');
 
-      Picture::factory()->create();
+      Picture::factory()->create()->each(function ($picture) {
+        $picture->comments()->saveMany(Comment::factory(3)->make());
+      });
       $picture = Picture::first();
 
       $response = $this->getJson(route('picture.show', [
         'id' => $picture->id,
       ]));
+
+      $comments = $picture->comments->sortByDesc('id')->map(function($comment) {
+        return [
+          'content' => $comment->content,
+          'author' => [
+            'name' => $comment->author->name,
+          ],
+        ];
+      })->all();
 
       $response->assertStatus(200)->assertJsonFragment([
         'id' => $picture->id,
@@ -32,6 +44,7 @@ class PictureDetailApiTest extends TestCase
         'owner' => [
           'name' => $picture->owner->name,
         ],
+        'comments' => $comments,
       ]);
     }
 }
