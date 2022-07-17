@@ -27,6 +27,9 @@ class Picture extends Model
       'id', 'owner', 'url'
     ];
 
+    /** 1ページあたりの項目数を制御する */
+    protected $perPage = 15;
+
     /** IDの桁数 */
     const ID_LENGTH = 12;
 

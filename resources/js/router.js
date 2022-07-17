@@ -12,6 +12,10 @@ Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: 'history',
+  // ページ遷移時にページ先頭を表示
+  scrollBehavior() {
+    return { x: 0, y: 0 }
+  },
   routes: [
     {
       path: '/',
