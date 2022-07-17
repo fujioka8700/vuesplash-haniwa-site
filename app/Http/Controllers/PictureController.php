@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Picture;
+use App\Models\Comment;
+use App\Http\Requests\StoreComment;
 use App\Http\Requests\StorePicture;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -101,5 +103,17 @@ class PictureController extends Controller
       $picture = Picture::where('id', $id)->with(['owner', 'comments.author'])->first();
 
       return $picture ?? abort(404);
+    }
+
+    public function addComment(Picture $picture, StoreComment $request)
+    {
+      $comment = new Comment();
+      $comment->content = $request->get('content');
+      $comment->user_id = Auth::user()->id;
+      $picture->comments()->save($comment);
+
+      $new_comment = Comment::where('id', $comment->id)->with('author')->first();
+
+      return response($new_comment, 201);
     }
 }
