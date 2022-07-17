@@ -98,7 +98,7 @@ class PictureController extends Controller
      */
     public function show(string $id)
     {
-      $picture = Picture::where('id', $id)->with(['owner'])->first();
+      $picture = Picture::where('id', $id)->with(['owner', 'comments.author'])->first();
 
       return $picture ?? abort(404);
     }
