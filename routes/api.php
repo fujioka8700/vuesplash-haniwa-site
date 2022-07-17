@@ -29,3 +29,4 @@ Route::get('/user', fn() => Auth::user())->name('user');
 Route::post('/pictures', [PictureController::class, 'create'])->name('picture.create');
 Route::get('/pictures', [PictureController::class, 'index'])->name('picture.index');
 Route::get('/pictures/{id}', [PictureController::class, 'show'])->name('picture.show');
+Route::post('/pictures/{picture}/comments', [PictureController::class, 'addComment'])->name('picture.comment');
