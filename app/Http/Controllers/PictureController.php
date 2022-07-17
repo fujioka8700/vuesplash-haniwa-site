@@ -16,7 +16,7 @@ class PictureController extends Controller
       /**
        * 認証が必要
        */
-      $this->middleware('auth')->except(['index', 'download']);
+      $this->middleware('auth')->except(['index', 'download', 'show']);
     }
 
     /**
@@ -79,7 +79,7 @@ class PictureController extends Controller
     {
       // 写真の存在チェック
       if (! Storage::cloud()->exists($picture->filename)) {
-        return abort(404);
+        abort(404);
       }
 
       $disposition = 'attachment; filename="' . $picture->filename . '"';
@@ -89,5 +89,17 @@ class PictureController extends Controller
       ];
 
       return response(Storage::cloud()->get($picture->filename), 200, $headers);
+    }
+
+    /**
+     * 写真詳細
+     * @param string $id
+     * @return Picture
+     */
+    public function show(string $id)
+    {
+      $picture = Picture::where('id', $id)->with(['owner'])->first();
+
+      return $picture ?? abort(404);
     }
 }
