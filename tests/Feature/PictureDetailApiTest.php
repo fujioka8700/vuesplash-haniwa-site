@@ -41,6 +41,8 @@ class PictureDetailApiTest extends TestCase
       $response->assertStatus(200)->assertJsonFragment([
         'id' => $picture->id,
         'url' => $picture->url,
+        'likes_count' => 0,
+        'liked_by_user' => false,
         'owner' => [
           'name' => $picture->owner->name,
         ],

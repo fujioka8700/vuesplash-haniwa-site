@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Picture;
 use App\Models\Comment;
-use App\Models\Like;
 use App\Http\Requests\StoreComment;
 use App\Http\Requests\StorePicture;
 use Illuminate\Http\Request;
@@ -101,7 +100,7 @@ class PictureController extends Controller
      */
     public function show(string $id)
     {
-      $picture = Picture::where('id', $id)->with(['owner', 'comments.author'])->first();
+      $picture = Picture::where('id', $id)->with(['owner', 'comments.author', 'likes'])->first();
 
       return $picture ?? abort(404);
     }
