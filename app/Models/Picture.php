@@ -49,6 +49,15 @@ class Picture extends Model
     }
 
     /**
+     * リレーションシップ - usersテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function likes()
+    {
+      return $this->belongsToMany('App\Models\User', 'likes')->withTimestamps();
+    }
+
+    /**
      * アクセサ - url
      * @return string
      */

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Picture;
 use App\Models\Comment;
+use App\Models\Like;
 use App\Http\Requests\StoreComment;
 use App\Http\Requests\StorePicture;
 use Illuminate\Http\Request;
@@ -122,5 +123,24 @@ class PictureController extends Controller
       $new_comment = Comment::where('id', $comment->id)->with('author')->first();
 
       return response($new_comment, 201);
+    }
+
+    /**
+     * いいね
+     * @param string $id
+     * @return array
+     */
+    public function like(string $id)
+    {
+      $picture = Picture::where('id', $id)->with('likes')->first();
+
+      if (! $picture) {
+        abort(404);
+      }
+
+      $picture->likes()->detach(Auth::user()->id);
+      $picture->likes()->attach(Auth::user()->id);
+
+      return ['photo_id' => $id];
     }
 }
