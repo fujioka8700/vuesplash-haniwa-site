@@ -30,3 +30,5 @@ Route::post('/pictures', [PictureController::class, 'create'])->name('picture.cr
 Route::get('/pictures', [PictureController::class, 'index'])->name('picture.index');
 Route::get('/pictures/{id}', [PictureController::class, 'show'])->name('picture.show');
 Route::post('/pictures/{picture}/comments', [PictureController::class, 'addComment'])->name('picture.comment');
+Route::put('/pictures/{id}/like', [PictureController::class, 'like'])->name('picture.like');
+Route::delete('/pictures/{id}/like', [PictureController::class, 'unlike']);

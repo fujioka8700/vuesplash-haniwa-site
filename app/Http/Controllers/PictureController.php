@@ -27,14 +27,14 @@ class PictureController extends Controller
      */
     public function index()
     {
-      $pictures = Picture::with(['owner'])->orderby(Picture::CREATED_AT, 'desc')->paginate();
+      $pictures = Picture::with(['owner', 'likes'])->orderby(Picture::CREATED_AT, 'desc')->paginate();
 
       return $pictures;
     }
 
     /**
      * 写真投稿
-     * @param Request $request
+     * @param StorePicture $request
      * @return \Illuminate\Http\Response
      */
     public function create(StorePicture $request)
@@ -100,11 +100,17 @@ class PictureController extends Controller
      */
     public function show(string $id)
     {
-      $picture = Picture::where('id', $id)->with(['owner', 'comments.author'])->first();
+      $picture = Picture::where('id', $id)->with(['owner', 'comments.author', 'likes'])->first();
 
       return $picture ?? abort(404);
     }
 
+    /**
+     * コメント投稿
+     * @param Picture $picture
+     * @param StoreComment $request
+     * @return \Illuminate\Http\Response
+     */
     public function addComment(Picture $picture, StoreComment $request)
     {
       $comment = new Comment();
@@ -112,8 +118,46 @@ class PictureController extends Controller
       $comment->user_id = Auth::user()->id;
       $picture->comments()->save($comment);
 
+      // authorリレーションをロードするためにコメントを取得しなおす
       $new_comment = Comment::where('id', $comment->id)->with('author')->first();
 
       return response($new_comment, 201);
+    }
+
+    /**
+     * いいね
+     * @param string $id
+     * @return array
+     */
+    public function like(string $id)
+    {
+      $picture = Picture::where('id', $id)->with('likes')->first();
+
+      if (! $picture) {
+        abort(404);
+      }
+
+      $picture->likes()->detach(Auth::user()->id);
+      $picture->likes()->attach(Auth::user()->id);
+
+      return ['photo_id' => $id];
+    }
+
+    /**
+     * いいねを解除
+     * @param string $id
+     * @return array
+     */
+    public function unlike(string $id)
+    {
+      $picture = Picture::where('id', $id)->with('likes')->first();
+
+      if (! $picture) {
+        abort(404);
+      }
+
+      $picture->likes()->detach(Auth::user()->id);
+
+      return ['photo_id' => $id];
     }
 }
