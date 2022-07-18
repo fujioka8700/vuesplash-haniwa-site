@@ -34,7 +34,7 @@ class PictureController extends Controller
 
     /**
      * 写真投稿
-     * @param Request $request
+     * @param StorePicture $request
      * @return \Illuminate\Http\Response
      */
     public function create(StorePicture $request)
@@ -105,6 +105,12 @@ class PictureController extends Controller
       return $picture ?? abort(404);
     }
 
+    /**
+     * コメント投稿
+     * @param Picture $picture
+     * @param StoreComment $request
+     * @return \Illuminate\Http\Response
+     */
     public function addComment(Picture $picture, StoreComment $request)
     {
       $comment = new Comment();
@@ -112,6 +118,7 @@ class PictureController extends Controller
       $comment->user_id = Auth::user()->id;
       $picture->comments()->save($comment);
 
+      // authorリレーションをロードするためにコメントを取得しなおす
       $new_comment = Comment::where('id', $comment->id)->with('author')->first();
 
       return response($new_comment, 201);
