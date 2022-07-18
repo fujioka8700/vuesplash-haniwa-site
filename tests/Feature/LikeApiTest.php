@@ -56,4 +56,16 @@ class LikeApiTest extends TestCase
 
       $this->assertEquals($this->picture->likes()->count(), 0);
     }
+
+    /**
+     * @test
+     */
+    public function should_2回同じ写真にいいねしても1個しかいいねがつかない()
+    {
+      $param = ['id' => $this->picture->id];
+      $response = $this->actingAs($this->user)->putJson(route('picture.like', $param));
+      $response = $this->actingAs($this->user)->putJson(route('picture.like', $param));
+
+      $this->assertEquals($this->picture->likes()->count(), 1);
+    }
 }
