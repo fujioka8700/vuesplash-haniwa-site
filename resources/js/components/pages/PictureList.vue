@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     async fetchPicture() {
-      const response =  await axios.get(`/api/pictures/?page=${this.page}`);
+      const response =  await axios.get(`/api/pictures?page=${this.page}`);
 
       if (response.status !== OK) {
         this.$store.commit('error/setCode', response.status);
