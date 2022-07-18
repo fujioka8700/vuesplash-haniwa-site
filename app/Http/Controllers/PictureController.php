@@ -143,4 +143,22 @@ class PictureController extends Controller
 
       return ['photo_id' => $id];
     }
+
+    /**
+     * いいねを解除
+     * @param string $id
+     * @return array
+     */
+    public function unlike(string $id)
+    {
+      $picture = Picture::where('id', $id)->with('likes')->first();
+
+      if (! $picture) {
+        abort(404);
+      }
+
+      $picture->likes()->detach(Auth::user()->id);
+
+      return ['photo_id' => $id];
+    }
 }

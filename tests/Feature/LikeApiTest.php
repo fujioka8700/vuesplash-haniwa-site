@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Like;
 use App\Models\User;
 use App\Models\Picture;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class LikeApiTest extends TestCase
@@ -32,6 +32,10 @@ class LikeApiTest extends TestCase
         'id' => $this->picture->id,
       ]));
 
+      $response->assertStatus(200)->assertJsonFragment([
+        'photo_id' => $this->picture->id
+      ]);
+
       $this->assertEquals($this->picture->likes()->count(), 1);
     }
 
@@ -40,7 +44,16 @@ class LikeApiTest extends TestCase
      */
     public function should_いいねを解除できる()
     {
-      $a = $this->picture->likes();
-      dump($a);
+      $this->picture->likes()->attach($this->user);
+
+      $response = $this->actingAs($this->user)->deleteJson(route('picture.like', [
+        'id' => $this->picture->id,
+      ]));
+
+      $response->assertStatus(200)->assertJsonFragment([
+        'photo_id' => $this->picture->id
+      ]);
+
+      $this->assertEquals($this->picture->likes()->count(), 0);
     }
 }
