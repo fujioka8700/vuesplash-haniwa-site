@@ -22,12 +22,12 @@ class Picture extends Model
 
     /** JSONに追加する属性 */
     protected $appends = [
-      'url',
+      'url', 'likes_count'
     ];
 
     /** JSONに含める属性 */
     protected $visible = [
-      'id', 'owner', 'url', 'comments'
+      'id', 'owner', 'url', 'comments', 'likes_count'
     ];
 
     /**
@@ -64,6 +64,15 @@ class Picture extends Model
     public function getUrlAttribute()
     {
       return Storage::cloud()->url($this->attributes['filename']);
+    }
+
+    /**
+     * アクセサ - likes_count
+     * @return int
+     */
+    public function getLikesCountAttribute()
+    {
+      return $this->likes->count();
     }
 
     /** IDの桁数 */

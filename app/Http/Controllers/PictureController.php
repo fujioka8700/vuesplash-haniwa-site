@@ -28,7 +28,7 @@ class PictureController extends Controller
      */
     public function index()
     {
-      $pictures = Picture::with(['owner'])->orderby(Picture::CREATED_AT, 'desc')->paginate();
+      $pictures = Picture::with(['owner', 'likes'])->orderby(Picture::CREATED_AT, 'desc')->paginate();
 
       return $pictures;
     }
