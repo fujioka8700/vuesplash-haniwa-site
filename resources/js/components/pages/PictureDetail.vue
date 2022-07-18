@@ -25,13 +25,40 @@
       <h2 class="photo-detail__title">
         <i class="icon ion-md-chatboxes"></i>Comments
       </h2>
+      <ul v-if="picture.comments.length > 0" class="photo-detail__comments">
+        <li
+          v-for="comment in picture.comments"
+          :key="comment.content"
+          class="photo-detail__commentItem"
+        >
+          <p class="photo-detail__commentBody">
+            {{ comment.content }}
+          </p>
+          <p class="photo-detail__commentInfo">
+            {{ comment.author.name }}
+          </p>
+        </li>
+      </ul>
+      <p v-else>No comments yet.</p>
+      <form class="form" v-if="isLogin" @submit.prevent="addComment">
+        <div v-if="commentErrors" class="errors">
+          <ul v-if="commentErrors.content">
+            <li v-for="msg in commentErrors.content" :key="msg">{{ msg }}</li>
+          </ul>
+        </div>
+        <textarea class="form__item" v-model="commentContext"></textarea>
+        <div class="form_button">
+          <button type="submit" class="button button--inverse">submit comment</button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { OK } from '../../util';
+import { mapGetters } from 'vuex';
+import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../../util';
 
 export default {
   props: {
@@ -43,8 +70,15 @@ export default {
   data() {
     return {
       picture: null,
-      fullWidth: false
+      fullWidth: false,
+      commentContext: '',
+      commentErrors: null
     }
+  },
+  computed: {
+    ...mapGetters({
+      isLogin: 'auth/check'
+    })
   },
   methods: {
     async fetchPicture() {
@@ -56,6 +90,34 @@ export default {
       }
 
       this.picture = response.data;
+    },
+    async addComment() {
+      const response = await axios.post(`/api/pictures/${this.id}/comments`, {
+        content: this.commentContext
+      });
+
+      // バリデーションエラー
+      if (response.status === UNPROCESSABLE_ENTITY) {
+        this.commentErrors = response.data.errors;
+        return false;
+      }
+
+      this.commentContext = '';
+
+      // エラーメッセージをクリア
+      this.commentErrors = null;
+
+      // その他のエラー
+      if (response.status !== CREATED) {
+        this.$store.commit('error/setCode', response.status);
+        return false;
+      }
+
+      // 投稿したコメントを表示する
+      this.picture.comments = [
+        response.data,
+        ...this.picture.comments
+      ];
     }
   },
   watch: {
