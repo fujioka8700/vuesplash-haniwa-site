@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Like;
 use App\Models\User;
 use App\Models\Picture;
 use Illuminate\Foundation\Testing\RefreshDatabase;
