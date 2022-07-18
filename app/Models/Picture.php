@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -22,12 +23,12 @@ class Picture extends Model
 
     /** JSONに追加する属性 */
     protected $appends = [
-      'url', 'likes_count'
+      'url', 'likes_count', 'liked_by_user'
     ];
 
     /** JSONに含める属性 */
     protected $visible = [
-      'id', 'owner', 'url', 'comments', 'likes_count'
+      'id', 'owner', 'url', 'comments', 'likes_count', 'liked_by_user'
     ];
 
     /**
@@ -73,6 +74,21 @@ class Picture extends Model
     public function getLikesCountAttribute()
     {
       return $this->likes->count();
+    }
+
+    /**
+     * アクセサ - liked_by_user
+     * @return bool
+     */
+    public function getLikedByUserAttribute()
+    {
+      if (Auth::guest()) {
+        return false;
+      }
+
+      return $this->likes->contains(function($user) {
+        return $user->id === Auth::user()->id;
+      });
     }
 
     /** IDの桁数 */

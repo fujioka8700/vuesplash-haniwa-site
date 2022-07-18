@@ -34,6 +34,7 @@ class PictureListApiTest extends TestCase
           'id' => $photo->id,
           'url' => $photo->url,
           'likes_count' => 0,
+          'liked_by_user' => false,
           'owner' => [
             'name' => $photo->owner->name
           ],
@@ -77,6 +78,7 @@ class PictureListApiTest extends TestCase
           'id' => $photo->id,
           'url' => $photo->url,
           'likes_count' => 3,
+          'liked_by_user' => true,
           'owner' => [
             'name' => $photo->owner->name
           ],
