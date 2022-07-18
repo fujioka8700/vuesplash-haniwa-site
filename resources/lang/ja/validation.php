@@ -160,6 +160,7 @@ return [
       'email' => 'メールアドレス',
       'password' => 'パスワード',
       'terms' => '規約',
+      'content' => 'コメント',
     ],
 
 ];
