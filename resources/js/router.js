@@ -5,6 +5,7 @@ import PictureList from './components/pages/PictureList';
 import PictureDetail from './components/pages/PictureDetail';
 import Login from './components/pages/Login';
 import SystemError from './components/pages/errors/System';
+import NotFound from './components/pages/errors/NotFound';
 
 import store from './store';
 
@@ -47,6 +48,10 @@ const router = new VueRouter({
     {
       path: '/500',
       component: SystemError
+    },
+    {
+      path: '*',
+      component: NotFound
     }
   ]
 });
