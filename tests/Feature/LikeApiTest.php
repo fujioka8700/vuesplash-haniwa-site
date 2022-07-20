@@ -32,7 +32,7 @@ class LikeApiTest extends TestCase
       ]));
 
       $response->assertStatus(200)->assertJsonFragment([
-        'photo_id' => $this->picture->id
+        'picture_id' => $this->picture->id
       ]);
 
       $this->assertEquals($this->picture->likes()->count(), 1);
@@ -50,7 +50,7 @@ class LikeApiTest extends TestCase
       ]));
 
       $response->assertStatus(200)->assertJsonFragment([
-        'photo_id' => $this->picture->id
+        'picture_id' => $this->picture->id
       ]);
 
       $this->assertEquals($this->picture->likes()->count(), 0);
